@@ -16,7 +16,7 @@ static void MainMenu()
         Console.WriteLine("1. Create new User");
         Console.WriteLine("2. List all Users");
         Console.WriteLine("3. Search for Username");
-        Console.WriteLine("4. Check for User Password");
+        Console.WriteLine("4. Create a new Note");
         Console.WriteLine("5. Quit Program");
         Console.WriteLine("");
         Console.Write("Type your option: ");
@@ -40,7 +40,7 @@ static void MainMenu()
                 string userName = Console.ReadLine();
                 Console.Write("Type in password: ");
                 string password = Console.ReadLine();
-                CheckUserPassword(userName, password);
+                AddNote(userName, password);
                 break;
             case "5":
                 isActive = false;
@@ -112,15 +112,33 @@ static void SearchUser(string username)
     }
 }
 
-static void AddNote()
+static void AddNote(string username, string password)
 {
     using (var con = new DatabaseContext())
     {
         List<Note> notes = new List<Note>();
 
         Console.Clear();
+        var user = con.Users.FirstOrDefault(u => u.userName == username);
+        if(CheckUserPassword(username, password))
+        {
+            Console.Write("Please write your Title: ");
+            string newTitle = Console.ReadLine();
+            Console.Write("Please write your note: ");
+            string newNote = Console.ReadLine();
+            var note = new Note
+            {
+                Title = newTitle,
+                Body = newNote,
+                User = user
+            };
 
-        Console.Write("Please write your new note: ");
+            con.Notes.Add(note);
+            con.SaveChanges();
+        }
+        Console.WriteLine("Your new note was created");
+        Console.ReadKey();
+
     }
 }
 
