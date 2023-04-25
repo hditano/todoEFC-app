@@ -16,8 +16,9 @@ static void MainMenu()
         Console.WriteLine("1. Create new User");
         Console.WriteLine("2. List all Users");
         Console.WriteLine("3. Search for Username");
-        Console.WriteLine("4. Create a new Note");
-        Console.WriteLine("5. Quit Program");
+        Console.WriteLine("4. Search for Notes");
+        Console.WriteLine("5. Create a new Note");
+        Console.WriteLine("6. Quit Program");
         Console.WriteLine("");
         Console.Write("Type your option: ");
         string option = Console.ReadLine();
@@ -36,13 +37,18 @@ static void MainMenu()
                 SearchUser(user);
                 break;
             case "4":
+                Console.Write("Type userName: ");
+                string userSearch = Console.ReadLine();
+                ListNotesForUser(userSearch);
+                break;
+            case "5":
                 Console.Write("Type in username: ");
                 string userName = Console.ReadLine();
                 Console.Write("Type in password: ");
                 string password = Console.ReadLine();
                 AddNote(userName, password);
                 break;
-            case "5":
+            case "6":
                 isActive = false;
                 break;
             case "default":
@@ -69,6 +75,22 @@ static void ListUsers()
         Console.ReadKey();
     }
 
+}
+
+static void ListNotesForUser(string username)
+{
+    using (var con = new DatabaseContext())
+    {
+
+        var notes = con.Notes.Where(a => a.User.userName == username).ToList();
+
+        Console.WriteLine("Title | Body");
+        foreach(var note in notes)
+        {
+            Console.WriteLine($"{note.Title} | {note.Body}");
+        }
+        Console.ReadKey();
+    }
 }
 
 static void CreateNewUser()
@@ -103,12 +125,20 @@ static void SearchUser(string username)
         Console.Clear();
         Console.WriteLine($"User Information for {username}");
         Console.WriteLine("");
-        foreach (var user in users)
+        if (users.Any())
         {
-            Console.WriteLine($"{user.FirstName} {user.LastName}");
-            Console.WriteLine($"{user.UserId}");
+            foreach (var user in users)
+            {
+                Console.WriteLine($"Name: {user.FirstName} {user.LastName}");
+                Console.WriteLine($"userId: {user.UserId}");
+            }
+            Console.ReadKey();
         }
-        Console.ReadKey();
+        else
+        {
+            Console.WriteLine("User was not found");
+            Console.ReadKey();
+        }
     }
 }
 
