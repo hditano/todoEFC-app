@@ -16,6 +16,7 @@ namespace todoEF_App
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlite(@"Data Source=todoapp.db");
+
         }
     }
 }

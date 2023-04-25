@@ -1,8 +1,24 @@
 ﻿// See https://aka.ms/new-console-template for more information
-static class Program
+using Microsoft.EntityFrameworkCore;
+using todoEF_App;
+
+
+static void ListUsers()
 {
-    static void Main()
+    using (var con = new DatabaseContext())
     {
-        Console.WriteLine("Hello World");
+        con.Database.EnsureCreated();
+
+        List<User> users = con.Users.ToList();
+
+        foreach(User user in users)
+        {
+            Console.WriteLine($"Name: {user.FirstName} {user.LastName}");
+            Console.WriteLine($"username: {user.userName}");
+        }
     }
+
 }
+
+
+ListUsers();
